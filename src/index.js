@@ -1,27 +1,21 @@
 const express = require("express");
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+dotenv.config();
+const app = express();
+let port = process.env.PORT || 3000
+const router = require("../src/routes/route");
 
-const route = require("./routes/route");
+app.use(express.json());
+mongoose.set('strictQuery', true) 
 
-const bodyParser = require('body-parser')
-const {default:mongoose}=require('mongoose')
-const express = require('express')
-const app=express();
-app.use(express.json())
-//app.use(bodyParser.json());
+app.use("/", router)
 
-//app.use(bodyParser.urlencoded({extended:true}))
-
-mongoose.connect("mongodb+srv://devendra_29:I28Cx63EjuXQjHtQ@devendra.ytysqub.mongodb.net/", {
-    useNewUrlParser: true
-})
-.then( () => console.log("MongoDb is connected"))
-.catch ( err => console.log(err) )
-
-
-
-app.use('/',route)
-
-
-app.listen(process.env.PORT || 3001, function () {
-    console.log('Express app running on port ' + (process.env.PORT || 3001))
+mongoose.connect(process.env.DATABASE, (err, data)=> {
+    if(err) console.log(err)
+    if(data) console.log("MongoDb is connected..");
 });
+
+app.listen(port, () => {
+    console.log(`Express app running on port ${port}`)
+})
